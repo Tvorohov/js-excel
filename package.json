@@ -20,7 +20,7 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@babel/polyfill": "7.8.3",
-    "babel-jest": "^29.6.2",
+    "babel-jest": "29.6.2",
     "eslint-plugin-jest": "23.8.2",
     "normalize.css": "8.0.1"
   },
@@ -45,6 +45,7 @@
     "sass-loader": "8.0.2",
     "webpack": "4.41.6",
     "webpack-cli": "3.3.11",
-    "webpack-dev-server": "3.10.3"
+    "webpack-dev-server": "3.10.3",
+    "minimatch": "3.0.5"
   }
 }
