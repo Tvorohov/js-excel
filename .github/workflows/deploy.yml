@@ -1,13 +1,19 @@
 name: Build and Deploy
+
 on:
   push:
     branches:
       - main
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  deployments: write
+  contents: write
+  statuses: write
+  actions: write
+  checks: read
+  pull-requests: write
+  issues: write
+  repository-projects: write
 
 jobs:
   build-and-deploy:
@@ -18,20 +24,28 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build 🏗️
+    - name: Install dependencies and build
       run: |
-        npm install
+        npm ci
         npm run build
 
-    - name: Deploy 🚀
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+    - name: Deploy to GitHub Pages using gh CLI
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git branch -D gh-pages || true
+        git checkout -b gh-pages
+        git add -f dist/
+        git commit -m "Deploy to GitHub Pages"
+        git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/Tvorohov/js-excel.git
+        git push -f origin gh-pages
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
